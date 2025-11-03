@@ -5,7 +5,7 @@ import { requireAuth } from '@/lib/middleware';
 // PATCH - update listing status
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Admin authentication check
@@ -18,7 +18,8 @@ export async function PATCH(
     }
 
     const { status } = await request.json();
-    const id = parseInt(params.id);
+    const { id } = await params;
+    const listingId = parseInt(id);
 
     // Validation
     const validStatuses = ['pending', 'contacted', 'purchased', 'rejected'];
@@ -31,7 +32,7 @@ export async function PATCH(
 
     // Update listing
     const listing = await prisma.listing.update({
-      where: { id },
+      where: { id: listingId },
       data: { status },
     });
 
@@ -48,7 +49,7 @@ export async function PATCH(
 // DELETE - delete listing
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Admin authentication check
@@ -60,11 +61,12 @@ export async function DELETE(
       );
     }
 
-    const id = parseInt(params.id);
+    const { id } = await params;
+    const listingId = parseInt(id);
 
     // Delete listing
     await prisma.listing.delete({
-      where: { id },
+      where: { id: listingId },
     });
 
     return NextResponse.json({ success: true });
