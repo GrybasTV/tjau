@@ -1,0 +1,45 @@
+// This is your Prisma schema file for PRODUCTION (PostgreSQL)
+// Use this for Vercel deployment
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Listing table - electronics selling offers
+model Listing {
+  id          Int      @id @default(autoincrement())
+  title       String   // Product name
+  description String   // Description
+  price       String   // Asking price (String, can be "Not specified" etc.)
+  condition   String   // Condition (like_new, excellent, good, fair, poor)
+  images      String   // JSON string with image URLs array
+  status      String   @default("pending") // pending, contacted, purchased, rejected
+  
+  // Contact information
+  contactName  String
+  contactEmail String
+  contactPhone String
+  contactPostcode String // UK postcode
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Admin users - site owner
+model Admin {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String   // Hashed password
+  createdAt DateTime @default(now())
+}
+

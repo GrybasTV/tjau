@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Skelbimų lentelė - elektronikos pardavimo pasiūlymai
+model Listing {
+  id          Int      @id @default(autoincrement())
+  title       String   // Prekės pavadinimas
+  description String   // Aprašymas
+  price       String   // Norima kaina (String, nes gali būti "Nepasiekta" ir pnš.)
+  condition   String   // Būklė (kaip nauja, gera, patenkinamu, su defektais)
+  images      String   // JSON string su nuotraukų URL masyvu
+  status      String   @default("pending") // pending, contacted, purchased, rejected
+  
+  // Kontaktai
+  contactName  String
+  contactEmail String
+  contactPhone String
+  contactPostcode String // UK pašto kodas
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Admin vartotojai - puslapio savininkas
+model Admin {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String   // Hash'd slaptažodis
+  createdAt DateTime @default(now())
+}
