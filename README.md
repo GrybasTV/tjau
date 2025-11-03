@@ -1,4 +1,4 @@
-# Electronics Trading Platform
+# Electronics Trading Platform - ptsltech.co.uk
 
 Simple MVP platform for selling used electronics to UK buyers. People submit offers to sell their electronics, and the site owner reviews and contacts sellers.
 
